@@ -1,0 +1,75 @@
+Descriptor:
+  Name: Contoso.PostIncidentReport
+  DisplayName: Post-Incident Report Generator
+  Description: Generates comprehensive post-incident reports by aggregating data from Microsoft Defender, Sentinel, and Purview.
+
+AgentDefinitions:
+  - Name: PostIncidentReportAgent
+    DisplayName: Post-Incident Report Agent
+    Description: Aggregates incidents from Defender and Sentinel, correlates Purview alerts and data risk, assesses user/device/identity risk, and provides guided response recommendations.
+    Publisher: Contoso
+    Product: SecurityOperations
+    RequiredSkillsets:
+      - M365
+      - Purview
+      - Sentinel
+    Triggers:
+      - Name: Default
+        DefaultPollPeriodSeconds: 0
+        ProcessSkill: Contoso.PostIncidentReport.PostIncidentReportAgent
+
+SkillGroups:
+  - Format: Agent
+    Skills:
+      - Name: PostIncidentReportAgent
+        DisplayName: Post-Incident Report Agent
+        Description: Orchestrates retrieval and aggregation of incident, alert, risk, identity, and remediation data from Defender, Sentinel, and Purview for post-incident reporting.
+        Inputs:
+          - Required: true
+            Name: query
+            Description: User request or filter for incidents to include in the report
+        Settings:
+          Instructions: |
+            You are a security operations reporting agent. Your mission is to generate a comprehensive post-incident report by aggregating and correlating data from Microsoft Defender, Sentinel, and Purview.
+
+            Step 1 - Retrieve Incidents:
+            Use GetDefenderIncidents to list recent Defender incidents matching the user query.
+            Use GetSentinelIncidents to list recent Sentinel incidents matching the user query.
+
+            Step 2 - Defender Incident Deep Dive:
+            For each Defender incident:
+            a. Generate a detailed post-incident report using GetDefenderIncidentReport with EnableSentinelData=true.
+            b. Retrieve guided response recommendations using GetIncidentGuidedResponse.
+            c. For each user entity: get user risk summary (GetUserRiskSummary), identity summary (GetDefenderIdentitySummary), and user activities (ZoomIntoPurviewUserRisk).
+            d. For each device entity: get device posture summary (GetDefenderDeviceSummary).
+            e. Aggregate Purview alerts using TriagePurviewAlerts filtered by IncidentId.
+            f. For each Purview alert: get detailed summary using SummarizePurviewAlert.
+            g. Get data risk summary using GetDataRiskSummary.
+            h. Perform deep data risk analysis using ZoomIntoPurviewDataRisk.
+
+            Step 3 - Sentinel Incident Analysis:
+            For each Sentinel incident: correlate with Defender incidents, enrich user/device entities as in Step 2, aggregate related Purview alerts and data risk.
+
+            Step 4 - Compile Final Report with sections:
+            1. Executive Summary
+            2. Incident Details (ID, title, severity, status, timeline)
+            3. Affected Entities (users with risk, devices with posture, files with sensitivity)
+            4. Triggered Alerts (Defender, Sentinel, Purview)
+            5. Data Risk Assessment (DLP/IRM findings, sensitive info types)
+            6. Remediation Recommendations (Immediate, Short-term, Long-term)
+            7. Appendix (entity lists, alert IDs)
+
+            Use clear Markdown formatting. Highlight critical items. Include timestamps and incident IDs.
+        ChildSkills:
+          - GetDefenderIncidents
+          - GetSentinelIncidents
+          - GetDefenderIncidentReport
+          - GetIncidentGuidedResponse
+          - GetUserRiskSummary
+          - GetDefenderIdentitySummary
+          - ZoomIntoPurviewUserRisk
+          - GetDefenderDeviceSummary
+          - TriagePurviewAlerts
+          - SummarizePurviewAlert
+          - GetDataRiskSummary
+          - ZoomIntoPurviewDataRisk

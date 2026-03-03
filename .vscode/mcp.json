@@ -1,0 +1,16 @@
+{
+    "servers": {
+        "sentinel-mcp-data-exploration": {
+			"url": "https://sentinel.microsoft.com/mcp/data-exploration",
+			"type": "http"
+		},
+		"sentinel-mcp-security-copilot-agent-creation": {
+			"url": "https://sentinel.microsoft.com/mcp/security-copilot-agent-creation",
+			"type": "http"
+		},
+		"sentinel-mcp-triage": {
+			"url": "https://sentinel.microsoft.com/mcp/triage",
+			"type": "http"
+		}
+    }
+}
