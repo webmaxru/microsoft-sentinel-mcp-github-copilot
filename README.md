@@ -18,6 +18,35 @@ No infrastructure deployment is required — the MCP server is fully hosted and 
 | File | Description |
 |------|-------------|
 | `post-incident-report-agent.yaml` | A Security Copilot agent definition that generates comprehensive post-incident reports by aggregating data from Microsoft Defender, Sentinel, and Purview. |
+| `.github/prompts/` | A collection of saved prompts for common security investigation workflows (see [Saved Prompts](#saved-prompts) below). |
+
+## Saved Prompts
+
+This repository includes reusable [VS Code saved prompts](https://code.visualstudio.com/docs/copilot/chat/prompt-files) in the `.github/prompts/` directory. These prompts provide one-click access to common security investigation workflows using Copilot chat in Agent mode.
+
+### How to Use
+
+1. Open VS Code chat (`Ctrl + Alt + I`) and set it to **Agent mode**
+2. Click the **Attach Context** button (📎) and select **Prompt...**
+3. Choose a prompt from the list — it will populate the chat input with the pre-defined query
+4. Fill in any variables (shown as `${{variable_name}}`) when prompted, then send
+
+### Available Prompts
+
+| Prompt | Description | Variables | MCP Tools Used |
+|--------|-------------|-----------|----------------|
+| `analyze-alert-evidence` | Analyze alert evidence for a specific incident | `incident_id` | GetIncidentById, ListAlerts, GetAlertByID |
+| `assess-urgent-incidents` | List recent incidents and assess urgency for triage | — | ListIncidents, GetIncidentById |
+| `hunt-entity-interactions` | Hunt for users that interacted with a specific entity | `entity` | FetchAdvancedHuntingTablesOverview, FetchAdvancedHuntingTablesDetailedSchema, RunAdvancedHuntingQuery |
+| `outgoing-connections` | Identify devices with unusually high outgoing network connections | — | search_tables, query_lake, list_sentinel_workspaces |
+| `password-spray-investigation` | Investigate users with password spray alerts for compromise | — | search_tables, query_lake, list_sentinel_workspaces, analyze_user_entity, get_entity_analysis |
+| `post-incident-report-agent` | Create a Security Copilot agent for comprehensive post-incident reporting | — | search_for_tools, start_agent_creation, compose_agent, get_evaluation, deploy_agent |
+| `sign-in-failures` | Summarize sign-in failures from the last 24 hours | — | search_tables, query_lake, list_sentinel_workspaces |
+| `url-ioc-analysis` | Find and analyze URL IOCs from a threat analytics report | `threat_analytics_report` | search_tables, query_lake, list_sentinel_workspaces, analyze_url_entity, get_entity_analysis |
+| `user-compromise-check` | Analyze whether a specific user is compromised | `user_object_id` | search_tables, query_lake, list_sentinel_workspaces, analyze_user_entity, get_entity_analysis |
+| `users-at-risk` | Find top risky users and explain risk factors | — | search_tables, query_lake, list_sentinel_workspaces |
+
+> **Note:** Each prompt declares a `tools` list in its front matter, which tells VS Code exactly which MCP tools to enable for that conversation — no manual tool selection required.
 
 ## Prerequisites
 
