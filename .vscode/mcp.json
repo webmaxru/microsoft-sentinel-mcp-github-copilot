@@ -11,6 +11,10 @@
 		"sentinel-mcp-triage": {
 			"url": "https://sentinel.microsoft.com/mcp/triage",
 			"type": "http"
-		}
+		},
+		"SigninDemo": {
+            "url": "https://sentinel.microsoft.com/mcp/custom/SigninDemoTools",
+            "type": "http"
+        },
     }
 }
