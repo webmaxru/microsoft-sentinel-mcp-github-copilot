@@ -97,6 +97,19 @@ Use natural language prompts in Agent mode to interact with your security data. 
 - *"Help me understand if the user \<user object ID\> is compromised."*
 - *"Investigate users with a password spray alert in the last seven days and tell me if any of them are compromised."*
 
+### Demo Prompts for Custom SigninDemo MCP Server
+
+The following prompts are designed for the custom **SigninDemo** MCP server, which provides sign-in analytics tools for investigating authentication patterns, risky locations, and brute-force attacks.
+
+| # | Prompt |
+|---|--------|
+| 1 | "Which locations have the most failed and risky sign-ins?" |
+| 2 | "Are there any sign-in attempts from sanctioned countries like North Korea or Iran?" |
+| 3 | "Which user accounts are being targeted with invalid password attempts?" |
+| 4 | "Show me the most suspicious IP addresses based on failure volume and risk signals" |
+| 5 | "Is the admin account under a brute-force attack? Summarize the sign-in failures" |
+| 6 | "Which applications are being targeted from high-risk locations?" |
+
 ## Post-Incident Report Agent
 
 The `post-incident-report-agent.yaml` file defines a Security Copilot agent that automates post-incident reporting. It orchestrates data retrieval from multiple sources:
