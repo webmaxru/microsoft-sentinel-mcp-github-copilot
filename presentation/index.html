@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel MCP with VS Code</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #111; color: #fff; overflow: hidden; height: 100vh; }
+  #slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 60px 80px; background: #1e1e1e; overflow-y: auto; }
+  #slide h1 { font-size: 2.2em; margin-bottom: 0.4em; color: #4fc3f7; }
+  #slide h2 { font-size: 1.5em; margin-bottom: 0.4em; color: #81d4fa; }
+  #slide h3 { font-size: 1.15em; margin-bottom: 0.3em; color: #b3e5fc; }
+  #slide p { font-size: 1.05em; line-height: 1.6; margin-bottom: 0.5em; }
+  #slide ul, #slide ol { margin: 0.3em 0 0.6em 1.5em; line-height: 1.7; }
+  #slide li { margin-bottom: 0.2em; }
+  #slide strong { color: #4fc3f7; }
+  #slide em { color: #aaa; font-style: italic; }
+  #slide code { background: #333; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  #slide blockquote { border-left: 4px solid #4fc3f7; padding: 8px 16px; margin: 0.5em 0; background: rgba(79,195,247,0.08); color: #ccc; }
+  #slide table { border-collapse: collapse; margin: 0.5em 0; width: 100%; font-size: 0.9em; }
+  #slide th { background: #333; padding: 8px 12px; text-align: left; border: 1px solid #444; color: #4fc3f7; }
+  #slide td { padding: 6px 12px; border: 1px solid #333; }
+  #slide tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+  #slide a { color: #4fc3f7; }
+  #slide hr { display: none; }
+  #counter { position: fixed; bottom: 16px; right: 24px; font-size: 0.85em; color: #666; z-index: 10; }
+  #header { position: fixed; top: 16px; left: 24px; font-size: 0.75em; color: #555; z-index: 10; }
+  .nav { position: fixed; bottom: 16px; left: 24px; z-index: 10; }
+  .nav button { background: #333; color: #aaa; border: 1px solid #444; padding: 6px 16px; margin-right: 4px; cursor: pointer; border-radius: 4px; font-size: 0.85em; }
+  .nav button:hover { background: #444; color: #fff; }
+  .lead { text-align: center; justify-content: center; }
+  .lead h1 { font-size: 2.8em; }
+  .lead h2 { font-size: 1.6em; color: #999; }
+</style>
+</head>
+<body>
+<div id="header">Microsoft Sentinel MCP with VS Code</div>
+<div id="slide"></div>
+<div id="counter"></div>
+<div class="nav">
+  <button onclick="go(-1)">← Prev</button>
+  <button onclick="go(1)">Next →</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+let slides = [], cur = 0;
+
+fetch('slides.md')
+  .then(r => r.text())
+  .then(md => {
+    // Normalize line endings
+    md = md.replace(/\r\n/g, '\n');
+    // Strip YAML front matter
+    md = md.replace(/^---[\s\S]*?---\n/, '');
+    // Split on slide separators (--- on its own line)
+    slides = md.split(/\n---\n/).map(s => s.trim()).filter(Boolean);
+    show(0);
+  });
+
+function show(i) {
+  cur = Math.max(0, Math.min(i, slides.length - 1));
+  const raw = slides[cur];
+  // Check for lead class directive
+  const isLead = raw.includes('_class: lead');
+  // Remove HTML comments
+  const clean = raw.replace(/<!--[\s\S]*?-->/g, '').trim();
+  document.getElementById('slide').innerHTML = marked.parse(clean);
+  document.getElementById('slide').className = isLead ? 'lead' : '';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + slides.length;
+}
+
+function go(d) { show(cur + d); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); show(0); }
+  if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+});
+</script>
+</body>
+</html>
